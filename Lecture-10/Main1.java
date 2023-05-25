@@ -20,7 +20,9 @@
 
 
  /* 
-  ! Volatile
+    ! disadvantage -> performance
+    ! Volatile
+
     In Java, the volatile keyword is used to indicate that a variable may be modified asynchronously
     by multiple threads. When a variable is declared as volatile, it ensures that any read or write operation
     on that variable is directly performed on the main memory, rather than using a thread's local cache.
@@ -117,3 +119,71 @@
         }
 
   */
+
+
+/* 
+ !RentrantReadWriteLock
+
+    The ReentrantReadWriteLock is a synchronization mechanism provided by Java      
+    that allows concurrent access to shared resources. It is designed to provide better
+    concurrency than using a simple ReentrantLock when there are multiple readers and
+    infrequent writers.
+    The ReentrantReadWriteLock maintains two locks: a read lock and a write lock.    
+    Multiple threads can acquire the read lock simultaneously as long as no thread holds
+    the write lock. This allows for concurrent reading and improves performance when the
+    shared resource is mostly read.
+    However, when a thread wants to modify the shared resource, it needs to acquire  
+    the write lock exclusively. The write lock allows only one thread to hold it, ensuring 
+    that no other threads are reading or writing to the shared resource while a write operation 
+    is in progress. This exclusive access ensures data consistency and prevents data corruption.
+    The ReentrantReadWriteLock is useful in scenarios where multiple threads need to 
+    read a shared resource concurrently, and write operations occur less frequently. It is commonly
+    used in scenarios such as caching, database access, and read-heavy applications.
+    */
+import java.util.concurrent.locks.*;
+
+public class Main1 {
+    public static void main(String[] args) {
+        System.out.println("slaw");
+        SharedObject2 sharedObject = new SharedObject2();
+        // Writer thread
+        Thread writerThread = new Thread(() -> {
+            sharedObject.inc();
+            System.out.println("Writer thread: Incremented sCount");
+        });
+
+        // Reader thread
+        Thread readerThread = new Thread(() -> {
+            int count = sharedObject.get();
+            System.out.println("Reader thread: Retrieved sCount: " + count);
+        });
+
+        writerThread.start();
+        readerThread.start();
+    }
+}
+
+class SharedObject2 {
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private int sCount = 0;
+
+    public void inc() {
+        Lock writeLock = lock.writeLock();
+        writeLock.lock();
+        try {
+            sCount++;
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    public int get() {
+        Lock readLock = lock.readLock();
+        readLock.lock();
+        try {
+            return sCount;
+        } finally {
+            readLock.unlock();
+        }
+    }
+}

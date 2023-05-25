@@ -12,20 +12,12 @@
 /* 
  ! ishi ama awaya zhmara la iak tawakw limit kobkatawa
 
-    class ComputeSum implements Callable<Integer>{
-        private int limit;
+    class ComputeSum implements Callable<Integar>{
         private int result;
-
-        public ComputeSum(int limit){
-            this.limit = limit;
-        }
-        public int getResult() {
-            return result;
-        }
-        
+    
         @Override
         public Integer call() {
-            for (int i = 0; i < limit + 1; i++) {
+            for (int i = 0; i < 1000 ; i++) {
                 result += i;
             }
             return result;
@@ -36,18 +28,16 @@
         public static void main(String[] args) throws InterruptedException, ExecutionException {
             
             ExecutorService pool = Executors.newFixedThreadPool(1);   //yak thread drwst krawa
-            ComputeSum cs = new ComputeSum(10000); // zhmarakanman la 0 tawkaw 100000 sum krdwa
             
-            Future<Integer> futre = pool.submit(cs); // 7sabka task tekrdwa
             
-            ! WRONG WAY -- MOT CORRECTSystem.out.println("the result using the old way: "+cs.getResult());
-            You will get result = zero  0 cause the computation hasent started yet
+            Future<Integer> laDahatwawa = pool.submit(new ComputeSum()); // 7sabka task tekrdwa
+            
+            // ! WRONG WAY -- MOT CORRECTSystem.out.println("the result using the old way: "+cs.getResult());
+            // You will get result = zero  0 cause the computation hasent started yet
 
+            ! right WAY
+            System.out.println("the result: "+laDahatwawa.get()); // am method a ishaka awastene 
 
-            ! write WAY(baxwa nazanm rite chon anwsre) -- System.out.println("the result: "+futre.get()); // am method a ishaka awastene 
-
-            ! Esta agar amay xwarawa bakar beni rasta chwkwm methodakai sarawa am threaday wastandwa, computationaka tawaw bwa
-             System.out.println("the result using : "+cs.getResult());
         }
     }
  */
@@ -125,7 +115,7 @@
         public class Main {
             public static void main(String[] args) throws InterruptedException, ExecutionException {
                 ExecutorService pool = Executors.newFixedThreadPool(10);    // Thread pool for getOrder()
-                ExecutorService pool2 = Executors.newFixedThreadPool(100);   // Thread pool for processOrder() and saveToDb()
+                ExecutorService pool2 = Executors.newCachedThreadPool();   // Thread pool for processOrder() and saveToDb()
         
                 CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> getOrder(), pool)
                         .thenApply(order -> processOrder(order))
@@ -154,8 +144,10 @@
                 return "Order processed: " + order;
             }
         
-            public static Integer saveToDb(String details) {
+            public static int saveToDb(String details) {
                 // Simulate saving the details to a database
                 return details.length(); // Returning the length of the details string as an example
             }
+
+            
         }

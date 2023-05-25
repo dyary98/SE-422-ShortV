@@ -39,7 +39,14 @@
             // Create a custom thread pool with 3 minimum threads, 5 maximum threads,
             // a 60-second keep-alive time for idle threads, and a SynchronousQueue for the task queue
             ExecutorService executor = new ThreadPoolExecutor(3, 5, 60, TimeUnit.SECONDS,
-                    new SynchronousQueue<>(), CallerRunsPolicy);
+            
+                    new LinkedBlockingQueue<>(100), AbortPolicy); exception task ihmalaka
+                    new LinkedBlockingQueue<>(100), DiscardPolicy); no exception task ihmalka
+
+                    new LinkedBlockingQueue<>(100), DiscardOldestPlociy); exception task ihmal naka
+                    new LinkedBlockingQueue<>(100), CallerRunsPolicy); no exception task ihmal naka
+                    
+
 
             // Submit tasks to the custom thread pool
             for (int i = 0; i < 10; i++) {

@@ -121,6 +121,8 @@
                     }
                     
                 })
+                !amay xwaraway lagal nia, away sarawa
+
                 for (int i = 0; i < 20; i++) {
                     pool2.submit(new Task());           
                 }
@@ -160,12 +162,12 @@
                 // Create a scheduled thread pool with 3 threads
                 ScheduledExecutorService pool = Executors.newScheduledThreadPool(3);
 
-                // Schedule a task to run after a delay of 2 seconds
+                Schedule a task to run after a delay of 2 seconds
                 pool.schedule(() -> {
                     System.out.println("Task executed after 2 seconds");
                 }, 2, TimeUnit.SECONDS);
 
-                // Schedule a task to run every 5 seconds starting after an initial delay of 1 second
+                ! Schedule a task to run every 5 seconds starting after an initial delay of 1 second
                 pool.scheduleAtFixedRate(() -> {
                     System.out.println("Task executed repeatedly every 5 seconds");
                 }, 1, 5, TimeUnit.SECONDS);
